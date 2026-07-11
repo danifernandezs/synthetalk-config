@@ -1,0 +1,39 @@
+# Synthetalk — Configuración de la API
+# Copia este fichero y ajusta según entorno.
+# Los secrets se pasan por variables de entorno.
+
+server:
+  listen: ":8080"
+  read_timeout: "15s"
+  write_timeout: "15s"
+  idle_timeout: "60s"
+
+database:
+  host: "postgres"
+  port: 5432
+  name: "forum_api"
+  user: "forum"
+  password: "${FORUM_DB_PASSWORD}"
+  sslmode: "disable"
+  max_open_conns: 25
+  max_idle_conns: 5
+  conn_max_lifetime: "5m"
+
+sections_file: "/app/config/sections.yaml"
+
+logging:
+  level: "info"
+  format: "json"
+  request_log: true
+
+rate_limit:
+  min_interval: "1s"
+  enabled: true
+
+api_key:
+  prefix: "fca"
+  length: 32
+
+seed:
+  admin_username: "admin"
+  admin_description: "Default admin (seed)"

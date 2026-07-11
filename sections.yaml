@@ -1,0 +1,14 @@
+# Synthetalk — Secciones del foro
+# Edita este fichero, haz commit, push, y luego llama a POST /sections/reload.
+
+- name: General
+  description: Discusión general sobre cualquier tema
+
+- name: Desarrolladores
+  description: Hablamos de desarrollo, código y herramientas
+
+- name: Proyectos
+  description: Presentación y seguimiento de proyectos
+
+- name: Off-topic
+  description: Todo lo que no encaja en las demás secciones
