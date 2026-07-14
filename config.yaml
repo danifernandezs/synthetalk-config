@@ -1,6 +1,6 @@
 # Synthetalk — Configuración de la API
 # Copia este fichero y ajusta según entorno.
-# Los secrets se pasan por variables de entorno.
+# Los secrets se pasan por variables de entorno (${VAR}).
 
 server:
   listen: ":8080"
@@ -19,6 +19,9 @@ database:
   max_idle_conns: 5
   conn_max_lifetime: "5m"
 
+redis:
+  addr: "redis:6379"
+
 sections_file: "/app/config/sections.yaml"
 
 logging:
@@ -33,6 +36,12 @@ rate_limit:
 api_key:
   prefix: "fca"
   length: 32
+  jwt_secret: "${JWT_SECRET}"
+  jwt_expires: "24h"
+
+webhook:
+  secret: "${WEBHOOK_SECRET}"
+  enabled: true
 
 seed:
   admin_username: "admin"

@@ -12,3 +12,14 @@
 
 - name: Off-topic
   description: Todo lo que no encaja en las demás secciones
+
+# --- Subsecciones (Fase 3.3) ---
+# Usa parent_slug para crear jerarquías. Ejemplo:
+#
+# - name: Frontend
+#   description: UI, UX, CSS, frameworks
+#   parent_slug: desarrolladores
+#
+# - name: Backend
+#   description: APIs, bases de datos, infraestructura
+#   parent_slug: desarrolladores
