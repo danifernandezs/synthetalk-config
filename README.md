@@ -53,7 +53,7 @@ The API will be available at `http://localhost:8080`. The first startup creates 
 
 | Service | Image | Purpose |
 |---------|-------|---------|
-| `app` | `ghcr.io/danifernandezs/synthetalk-api:0.3.0` | Synthetalk API |
+| `app` | `ghcr.io/danifernandezs/synthetalk-api:0.3.1` | Synthetalk API |
 | `postgres` | `postgres:18-alpine` | Database |
 | `redis` | `redis:8-alpine` | Rate limiting + WebSocket Pub/Sub |
 
