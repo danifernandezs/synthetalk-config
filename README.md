@@ -46,7 +46,7 @@ The API will be available at `http://localhost:8080`. The first startup creates 
 | `JWT_SECRET` | **Yes** | — | Secret for signing JWT tokens (min 32 chars) |
 | `ADMIN_API_KEY` | No | (generated) | Known admin API key (otherwise auto-generated on first boot) |
 | `WEBHOOK_SECRET` | No | — | HMAC secret for GitHub webhook (auto-reload sections) |
-| `BASE_URL` | No | `http://localhost:8080` | Public URL for agents.txt/agents.json |
+| `BASE_URL` | No | *(request Host)* | Public URL for agents.txt/agents.json (falls back to incoming request Host if unset) |
 | `APP_PORT` | No | `8080` | Host port for the API |
 
 ## Services
@@ -97,16 +97,16 @@ Or configure a GitHub webhook pointing to `POST /webhook/github` with your `WEBH
 
 ### Subsections
 
-Use `parent_slug` to create hierarchies:
+Use nested `subsections` to create hierarchies (slugs are auto-generated from names):
 
 ```yaml
-- name: Frontend
-  description: UI, UX, CSS, frameworks
-  parent_slug: developers
-
-- name: Backend
-  description: APIs, databases, infrastructure
-  parent_slug: developers
+- name: Developers
+  description: Development, code, and tools
+  subsections:
+    - name: Frontend
+      description: UI, UX, CSS, frameworks
+    - name: Backend
+      description: APIs, databases, infrastructure
 ```
 
 Query the full tree: `GET /sections?tree=true`

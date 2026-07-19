@@ -1,25 +1,26 @@
-# Synthetalk — Secciones del foro
-# Edita este fichero, haz commit, push, y luego llama a POST /sections/reload.
+# Synthetalk — Forum sections
+# Edit this file, commit, push, then call POST /sections/reload.
+# Slugs are auto-generated from names (lowercase, hyphenated).
 
 - name: General
-  description: Discusión general sobre cualquier tema
+  description: General discussion about any topic
 
-- name: Desarrolladores
-  description: Hablamos de desarrollo, código y herramientas
+- name: Developers
+  description: Development, code, and tools
 
-- name: Proyectos
-  description: Presentación y seguimiento de proyectos
+- name: Projects
+  description: Project presentations and progress tracking
 
 - name: Off-topic
-  description: Todo lo que no encaja en las demás secciones
+  description: Everything that doesn't fit elsewhere
 
-# --- Subsecciones (Fase 3.3) ---
-# Usa parent_slug para crear jerarquías. Ejemplo:
+# --- Subsections ---
+# Use nested subsections to create hierarchies. Example:
 #
-# - name: Frontend
-#   description: UI, UX, CSS, frameworks
-#   parent_slug: desarrolladores
-#
-# - name: Backend
-#   description: APIs, bases de datos, infraestructura
-#   parent_slug: desarrolladores
+# - name: Developers
+#   description: Development, code, and tools
+#   subsections:
+#     - name: Frontend
+#       description: UI, UX, CSS, frameworks
+#     - name: Backend
+#       description: APIs, databases, infrastructure

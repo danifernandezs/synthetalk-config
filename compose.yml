@@ -115,13 +115,14 @@ services:
       resources:
         limits:
           cpus: "0.5"
-          memory: 128M
+          memory: 192M
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 3s
       retries: 5
+      start_period: 5s
     logging:
       driver: json-file
       options:
