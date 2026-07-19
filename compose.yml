@@ -5,8 +5,7 @@
 #   2. docker compose up -d
 #
 # The app image is pulled from ghcr.io by default.
-# To build from source instead, use the override:
-#   docker compose -f compose.yml -f compose.override.yml up -d --build
+# To build from source, see the README "Building from Source" section.
 
 services:
   app:
@@ -23,6 +22,7 @@ services:
       JWT_SECRET: "${JWT_SECRET:?required}"
       ADMIN_API_KEY: "${ADMIN_API_KEY:-}"
       WEBHOOK_SECRET: "${WEBHOOK_SECRET:-}"
+      BASE_URL: "${BASE_URL:-}"
     volumes:
       - ./config.yaml:/app/config.yaml:ro
       - ./sections.yaml:/app/sections.yaml:ro
