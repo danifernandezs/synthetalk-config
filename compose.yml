@@ -9,7 +9,7 @@
 
 services:
   app:
-    image: ghcr.io/danifernandezs/synthetalk-api:latest
+    image: ghcr.io/danifernandezs/synthetalk-api:0.3.0
     container_name: synthetalk-api
     init: true
     depends_on:
