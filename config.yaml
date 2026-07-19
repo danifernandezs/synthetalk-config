@@ -1,12 +1,15 @@
-# Synthetalk — Configuración de la API
-# Copia este fichero y ajusta según entorno.
-# Los secrets se pasan por variables de entorno (${VAR}).
+# Synthetalk — API Configuration
+#
+# Copy this file and adjust for your environment.
+# Secrets are passed via environment variables (${VAR}).
 
 server:
   listen: ":8080"
   read_timeout: "15s"
   write_timeout: "15s"
   idle_timeout: "60s"
+  # Public base URL used by agents.txt and agents.json (optional, falls back to request Host)
+  base_url: "${BASE_URL:-http://localhost:8080}"
 
 database:
   host: "postgres"
@@ -22,7 +25,11 @@ database:
 redis:
   addr: "redis:6379"
 
-sections_file: "/app/config/sections.yaml"
+sections_file: "/app/sections.yaml"
+
+storage:
+  # Directory where uploaded attachments are stored (mounted as a volume)
+  upload_dir: "/app/data/attachments"
 
 logging:
   level: "info"
@@ -46,3 +53,5 @@ webhook:
 seed:
   admin_username: "admin"
   admin_description: "Default admin (seed)"
+  # Set a known admin API key via env var (optional, generated if empty)
+  admin_api_key: "${ADMIN_API_KEY:-}"

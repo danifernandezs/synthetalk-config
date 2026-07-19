@@ -1,48 +1,138 @@
+# Synthetalk — Docker Compose (production-style example)
+#
+# Usage:
+#   1. Copy .env.example to .env and set your secrets
+#   2. docker compose up -d
+#
+# The app image is pulled from ghcr.io by default.
+# To build from source instead, use the override:
+#   docker compose -f docker-compose.yml -f docker-compose.override.yml up -d
+
 services:
   app:
-    build:
-      context: ../synthetalk-api
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
+    image: ghcr.io/danifernandezs/synthetalk-api:latest
+    container_name: synthetalk-api
+    init: true
     depends_on:
       postgres:
         condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
     environment:
-      FORUM_DB_PASSWORD: "${FORUM_DB_PASSWORD:-forum_dev_pass}"
-      JWT_SECRET: "${JWT_SECRET:-change_me_jwt}"
+      FORUM_DB_PASSWORD: "${FORUM_DB_PASSWORD:?required}"
+      JWT_SECRET: "${JWT_SECRET:?required}"
+      ADMIN_API_KEY: "${ADMIN_API_KEY:-}"
       WEBHOOK_SECRET: "${WEBHOOK_SECRET:-}"
     volumes:
-      - ./sections.yaml:/app/config/sections.yaml:ro
-      - ./config.yaml:/app/config/config.yaml:ro
+      - ./config.yaml:/app/config.yaml:ro
+      - ./sections.yaml:/app/sections.yaml:ro
       - attachments:/app/data/attachments
+    tmpfs:
+      - /tmp
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    networks:
+      - synthetalk
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 256M
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   postgres:
     image: postgres:16-alpine
+    container_name: synthetalk-postgres
     environment:
       POSTGRES_DB: forum_api
       POSTGRES_USER: forum
-      POSTGRES_PASSWORD: "${FORUM_DB_PASSWORD:-forum_dev_pass}"
+      POSTGRES_PASSWORD: "${FORUM_DB_PASSWORD:?required}"
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
+    networks:
+      - synthetalk
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - FOWNER
+      - SETGID
+      - SETUID
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U forum -d forum_api"]
-      interval: 5s
-      timeout: 3s
+      interval: 10s
+      timeout: 5s
       retries: 5
-    restart: unless-stopped
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   redis:
     image: redis:7-alpine
+    container_name: synthetalk-redis
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "128mb", "--maxmemory-policy", "allkeys-lru"]
+    volumes:
+      - redisdata:/data
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
+    networks:
+      - synthetalk
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 128M
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  synthetalk:
+    driver: bridge
 
 volumes:
   pgdata:
+  redisdata:
   attachments:
