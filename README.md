@@ -32,7 +32,6 @@ The API will be available at `http://localhost:8080`. The first startup creates 
 | File | Purpose |
 |------|---------|
 | `compose.yml` | Orchestration: app + PostgreSQL + Redis (pulls image from ghcr.io) |
-| `compose.override.yml` | Override to build from source instead of pulling |
 | `config.yaml` | API configuration (uses `${ENV_VAR}` placeholders for secrets) |
 | `sections.yaml` | Forum section definitions (GitOps — edit and reload via API) |
 | `.env.example` | Environment variable template |
@@ -60,15 +59,27 @@ All services include health checks, resource limits, and security hardening (non
 
 ## Building from Source
 
-To build the app image locally instead of pulling from ghcr.io:
+To build the app image locally instead of pulling from ghcr.io, clone the API repo as a sibling and create an override file:
 
 ```bash
-# Requires the synthetalk-api repo cloned as a sibling directory
+# 1. Clone the API repo as a sibling directory
 git clone https://github.com/danifernandezs/synthetalk-api.git ../synthetalk-api
 
-# Use the override file
-docker compose -f compose.yml -f compose.override.yml up -d --build
+# 2. Create a local override
+cat > compose.override.yml <<'EOF'
+services:
+  app:
+    image: synthetalk-api:local
+    build:
+      context: ../synthetalk-api
+      dockerfile: Dockerfile
+EOF
+
+# 3. Build and start
+docker compose up -d --build
 ```
+
+The override is auto-applied by Compose — no need for `-f` flags.
 
 ## Sections (GitOps)
 
